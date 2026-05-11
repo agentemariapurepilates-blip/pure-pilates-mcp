@@ -1,63 +1,139 @@
-# Pure Pilates MCP
+# MCP da Pure Pilates
 
-Servidor MCP que entrega os guias da Pure Pilates pra qualquer assistente de IA que suporte o protocolo MCP (Claude Desktop, Cursor, etc.).
+Servidor MCP que entrega os guias da Pure Pilates (copy, layout, TI) pra qualquer assistente de IA — Claude Desktop, Claude Code, Cursor, etc. Também permite **salvar aprendizados novos** direto pelo chat, sem precisar abrir o GitHub.
 
 ## O que tem dentro
 
-Três categorias, cada uma é uma ferramenta MCP:
+Três categorias, cada uma com tools de **ler** e **salvar**:
 
-- **`copy`** → tudo de texto e editorial (tom de voz, vocabulário, exemplos)
-- **`layout`** → cores, brandbook, tipografia, logo, identidade visual
-- **`ti`** → como criar SAAS, landing pages e outras práticas técnicas
+| Categoria | Tool de leitura | Tool de escrita | Pasta no GitHub |
+|---|---|---|---|
+| Copy | `copy` | `salvar_copy` | `content/copy/` |
+| Layout | `layout` | `salvar_layout` | `content/layout/` |
+| TI | `ti` | `salvar_ti` | `content/ti/` |
 
-Cada categoria carrega **todos** os arquivos `.md` da pasta correspondente no GitHub, concatenados. Adicionar um guia novo é só criar um `.md` na pasta certa — **não precisa mexer no código**.
+Tudo é arquivo `.md` no GitHub. O MCP busca em tempo real (cache de 60s).
 
-## Como funciona
+---
 
-O servidor busca o conteúdo direto de um repositório GitHub em tempo real. Pra atualizar qualquer guia, você edita o arquivo `.md` no GitHub (pelo navegador, sem precisar de git). Em até 1 minuto, qualquer pessoa que estiver usando o MCP recebe a versão nova — sem reinstalar nada.
+## Como instalar (em qualquer máquina do time)
 
-## Como usar (em qualquer máquina)
+### Pré-requisitos
 
-No cliente MCP (ex: Claude Desktop), adicione na configuração:
+1. **Claude Desktop** instalado (https://claude.ai/download)
+2. **uv** (ferramenta que roda o MCP)
+3. **gh CLI** (apenas se você for **salvar** aprendizados; não precisa só pra ler)
+
+### Passo 1 — Instalar o `uv`
+
+**Mac/Linux** (no Terminal):
+```
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+**Windows** (no PowerShell):
+```
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+```
+
+### Passo 2 — Conectar o MCP no Claude Desktop
+
+Abrir o arquivo de config do Claude Desktop:
+
+- **Mac:** `~/Library/Application Support/Claude/claude_desktop_config.json`
+- **Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
+
+Se o arquivo não existir, cria com este conteúdo. Se já existir com outros MCPs, adiciona o bloco `pure-pilates` dentro do `mcpServers`:
 
 ```json
 {
   "mcpServers": {
     "pure-pilates": {
       "command": "uvx",
-      "args": ["pure-pilates-mcp"]
+      "args": [
+        "--from",
+        "git+https://github.com/agentemariapurepilates-blip/pure-pilates-mcp",
+        "pure-pilates-mcp"
+      ]
     }
   }
 }
 ```
 
-Pronto. As ferramentas `copy`, `layout` e `ti` ficam disponíveis.
+### Passo 3 — Reiniciar o Claude Desktop
 
-## Como editar os guias (sem código)
+Cmd+Q (Mac) ou fechar pelo ícone (Windows). Abrir de novo. Pronto — as tools `copy`, `layout` e `ti` já podem ser usadas.
 
-1. Abra o repositório no GitHub
-2. Navegue até `content/copy/`, `content/layout/` ou `content/ti/`
-3. Clique no arquivo desejado
-4. Clique no ícone de lápis (canto superior direito) pra editar
-5. Faça as mudanças e clique em **Commit changes**
-6. Em até 1 minuto, o MCP entrega a versão atualizada
+---
 
-## Como adicionar um guia novo
+## Pra salvar aprendizados (setup extra)
 
-1. Vá até a pasta da categoria (`content/copy/`, `content/layout/` ou `content/ti/`)
-2. Clique em **Add file → Create new file**
-3. Nome do arquivo: `nome-do-guia.md`
-4. Escreva o conteúdo em Markdown
-5. Commit — pronto. Aparece automaticamente na ferramenta correspondente
+Pra usar as tools `salvar_copy`, `salvar_layout`, `salvar_ti`, você precisa estar logado na conta GitHub da Maria. Setup só uma vez por máquina:
 
-## Apontar pra outro repositório
+### Instalar o `gh` CLI
 
-Defina as variáveis de ambiente:
+**Mac:**
+```
+brew install gh
+```
+
+**Windows/Linux:** ver https://cli.github.com/
+
+### Logar na conta da Maria
 
 ```
-PURE_PILATES_REPO=seu_usuario/seu_repo
-PURE_PILATES_BRANCH=main
+gh auth login
 ```
+
+Escolhe na tela:
+- **GitHub.com**
+- **HTTPS**
+- **Login with a web browser** (vai abrir o navegador — entra na conta `agentemariapurepilates-blip`)
+
+Pra confirmar:
+```
+gh auth status
+```
+
+Tem que aparecer `Logged in to github.com account agentemariapurepilates-blip`.
+
+> 💡 Quem trabalha em outros projetos da Pure provavelmente já fez isso. Pode pular esses passos.
+
+---
+
+## Como usar (em qualquer Claude)
+
+### Ler os guias
+
+> *"Me traz o guia de copy da Pure Pilates"*
+>
+> *"Quais são as cores da identidade visual da Pure?"*
+>
+> *"Como criar uma landing page da Pure?"*
+
+### Salvar aprendizados
+
+> *"Salva esse aprendizado no MCP da Pure, categoria TI: cache agressivo de assets versionados quebra o deploy quando..."*
+>
+> *"Adiciona no guia de copy da Pure: ao falar de aulas em casa, sempre usar 'pilates em casa' e nunca 'pilates remoto'"*
+>
+> *"Salva no layout: a paleta secundária da Pure inclui..."*
+
+O Claude vai chamar a tool certa, criar (ou atualizar) o arquivo `.md` no GitHub, e fazer commit como Maria. Em até 60s qualquer outra pessoa do time já vê o conteúdo novo.
+
+---
+
+## Como editar guias diretamente no GitHub (sem código)
+
+Alternativa pra quando você não está no Claude:
+
+1. Abre https://github.com/agentemariapurepilates-blip/pure-pilates-mcp
+2. Navega até `content/copy/`, `content/layout/` ou `content/ti/`
+3. Clica no arquivo desejado → ícone de lápis → edita → **Commit changes**
+
+Funciona do celular também.
+
+---
 
 ## Estrutura do projeto
 
@@ -65,31 +141,22 @@ PURE_PILATES_BRANCH=main
 .
 ├── pyproject.toml      → config do pacote Python
 ├── README.md           → este arquivo
-├── server.py           → o servidor MCP (1 arquivo, ~80 linhas)
-└── content/            → templates dos guias (a fonte oficial fica no GitHub)
-    ├── copy/
-    │   ├── tom-de-voz.md
-    │   ├── vocabulario.md
-    │   └── exemplos.md
-    ├── layout/
-    │   ├── cores.md
-    │   ├── tipografia.md
-    │   ├── logo.md
-    │   └── brandbook.md
-    └── ti/
-        ├── saas.md
-        └── landing-pages.md
+├── server.py           → o servidor MCP
+└── content/            → guias da Pure (fonte oficial)
+    ├── copy/           → textos, editorial, tom de voz
+    ├── layout/         → cores, brandbook, tipografia
+    └── ti/             → como criar SAAS, landing pages
 ```
 
-## Rodar localmente (pra testar)
+## Configurar pra apontar pra outro repositório
+
+```
+PURE_PILATES_REPO=seu_usuario/seu_repo
+PURE_PILATES_BRANCH=main
+```
+
+## Rodar localmente (pra desenvolvimento)
 
 ```
 uv run server.py
-```
-
-## Publicar nova versão no PyPI
-
-```
-uv build
-uv publish
 ```
