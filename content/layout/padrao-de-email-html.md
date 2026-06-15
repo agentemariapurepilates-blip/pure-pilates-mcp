@@ -119,3 +119,18 @@ Regras:
 - Manter o `<link>` do Google Fonts (Montserrat) no `<head>`: Apple Mail/iOS renderizam Montserrat de verdade; os demais clientes usam Arial.
 - Fontes web-safe seguras (caso precise variar): **Arial, Helvetica, Verdana, Tahoma, Trebuchet MS** (sans-serif) · **Georgia, Times New Roman** (serifadas).
 - Lembrete: o Gmail só suporta nativamente as web fonts **Open Sans** e **Roboto** — nenhuma outra (incluindo Montserrat) carrega lá.
+
+---
+
+---
+
+## Formas permitidas nos cards/blocos (variações)
+
+As formas da linguagem Pure (catálogo completo no guia **`formas-permitidas`**) podem ser usadas nos blocos do e-mail — cada uma isolada.
+
+**Card "pétala" (variação dos cards 1-2-3):** mesma forma do card padrão, porém mais arredondada (quase circular com 1 canto reto).
+- Em e-mail, **preferir CSS a SVG**: `border-radius: 50% 50% 0 50%` num `<td>`/`<div>` aproximadamente quadrado — renderiza no Gmail/Apple/webmail. **SVG inline some no Gmail e no Outlook** (só Apple Mail/iOS renderiza).
+- Manter a célula ~quadrada pro arredondamento ficar circular; com raio fixo grande (`120px 120px 0 120px`) fica em formato de card.
+- Se usar SVG mesmo assim (ok só pra Apple Mail/iOS), trocar `fill="#c10230"` por `#C12030` e a fonte por `Arial`.
+
+Recomendação geral: blocos/cards via **tabela + border-radius** (não SVG), pra garantir renderização no Gmail e Outlook. Formas sem solução em CSS (coração, etiqueta %) entram como **PNG**.
