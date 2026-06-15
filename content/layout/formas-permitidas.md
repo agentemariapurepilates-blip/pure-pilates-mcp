@@ -44,3 +44,19 @@ Quadrado/retângulo com 3 cantos totalmente arredondados + 1 canto reto. É a fo
 - **`border-radius`** funciona em Gmail, Apple Mail, iOS e webmails; **Outlook (Windows) ignora** e mostra cantos retos (degrada ok, continua legível).
 - **SVG inline NÃO renderiza em Gmail nem Outlook** — só Apple Mail/iOS. Para formas que não dão em CSS (coração, tag, pétala muito complexa), exportar **PNG**.
 - Cor sempre `#C12030` (nunca `#c10230` nem dourado). Ver [[padrao-de-email-html]].
+
+---
+
+---
+
+## Refinamento — forma-assinatura em card vertical (aprendizado prático)
+
+A forma-assinatura da Pure é **assimétrica: 3 cantos bem redondos + 1 canto reto** (canto de 90° que dá personalidade). Aprendizados ao aplicar em card de e-mail (mais alto que largo):
+
+- **NÃO usar `50%` em célula alta:** vira "ovo" (o topo arredonda inteiro). O `50%` só funciona em elemento ~quadrado.
+- **NÃO arredondar os 4 cantos iguais:** perde a essência, fica card genérico/convencional.
+- **NÃO usar raio pequeno (ex: 40px) com 1 canto reto:** os outros cantos ficam quase quadrados e o canto reto parece "defeito pontudo".
+- **Receita que funciona** (card ~180px largura): **raio generoso porém menor que a metade da largura** + 1 canto reto. Ex.: `border-radius: 70px 70px 0 70px` (canto reto embaixo-direita). Mantém um trecho de borda reta entre as curvas (não vira ovo) e o canto reto vira detalhe de estilo intencional.
+- Variar qual canto é o reto p/ ritmo visual: `70px 70px 0 70px` (BR) · `70px 70px 70px 0` (BL) · `0 70px 70px 70px` (TL) · `70px 0 70px 70px` (TR).
+
+Regra geral: **sempre manter 1 canto reto** nas formas-blob da Pure — é a assinatura. Renderiza no Gmail/Apple; no Outlook degrada pra retângulo (sem quebrar).
