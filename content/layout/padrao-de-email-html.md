@@ -100,3 +100,22 @@ Estrutura-base aprovada pela Maria para e-mails marketing em HTML. Layout valida
 </table></td></tr></table>
 </body></html>
 ```
+
+---
+
+---
+
+## Atualização — Fonte oficial do e-mail (decisão da Maria)
+
+Montserrat é **web font** e NÃO renderiza em **Gmail** nem **Outlook (Windows)** — só em Apple Mail/iOS. Em e-mail, a base tem que ser uma fonte **web-safe**; o Montserrat fica apenas como *progressive enhancement*.
+
+**Stack oficial do e-mail:**
+```
+font-family:'Montserrat',Arial,'Helvetica Neue',Helvetica,sans-serif;
+```
+
+Regras:
+- Aplicar esse stack no `<body>` **E** em cada elemento de texto (`h1`, `h2`, `p`). O Outlook não herda a fonte do `<body>` e cai em **Times New Roman** (serifada) se não for forçado `sans-serif`.
+- Manter o `<link>` do Google Fonts (Montserrat) no `<head>`: Apple Mail/iOS renderizam Montserrat de verdade; os demais clientes usam Arial.
+- Fontes web-safe seguras (caso precise variar): **Arial, Helvetica, Verdana, Tahoma, Trebuchet MS** (sans-serif) · **Georgia, Times New Roman** (serifadas).
+- Lembrete: o Gmail só suporta nativamente as web fonts **Open Sans** e **Roboto** — nenhuma outra (incluindo Montserrat) carrega lá.
