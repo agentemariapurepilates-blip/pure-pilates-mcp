@@ -134,3 +134,17 @@ As formas da linguagem Pure (catálogo completo no guia **`formas-permitidas`**)
 - Se usar SVG mesmo assim (ok só pra Apple Mail/iOS), trocar `fill="#c10230"` por `#C12030` e a fonte por `Arial`.
 
 Recomendação geral: blocos/cards via **tabela + border-radius** (não SVG), pra garantir renderização no Gmail e Outlook. Formas sem solução em CSS (coração, etiqueta %) entram como **PNG**.
+
+---
+
+---
+
+## Atualização (jun/2026) — aprendizados de renderização validados no Gmail real
+
+1. **Fundos coloridos: usar `bgcolor` ALÉM do CSS.** O Gmail REMOVE `background-color` do CSS inline ao entregar — qualquer bloco colorido (hero, cards, faixas, círculo de seta) fica transparente e "some", deixando só o texto. Solução: atributo HTML `bgcolor="#C12030"` na `<table>` E no `<td>`, mantendo o `background-color` no CSS como reforço. `<div>` não aceita `bgcolor` → converter a forma em `<table>`/`<td>` (foi assim que o círculo da seta foi refeito).
+
+2. **Hero "ponta a ponta" (full-bleed).** Para o hero encostar nas bordas dos 600px, tirar o padding lateral do wrapper (`padding:0 0 16px 0`). A forma usada é o banner com rabinho: `border-radius:80px 140px 140px 0` (3 cantos arredondados + canto inferior-esquerdo reto, com arco forte à direita).
+
+3. **Cards "Como indicar?" — no mobile, NÃO usar 3 pétalas lado a lado.** Em colunas estreitas + texto longo, a pétala `50%` estica e vira "ovo". Solução aprovada pela Maria: **lista vertical** — cada passo numa linha, com **selo pétala 56×56** (`border-radius:50% 50% 0 50%`, número branco 24px bold) à esquerda + texto **13px** ao lado, e **linha laranja 1px** (`bgcolor="#DB9828"`) entre os passos. A pétala só fica redonda em elemento ~quadrado (o selo); nunca em card alto.
+
+4. **Preview/teste:** o editor de RASCUNHO do Gmail "achata" o layout (tira formas/cores). Avaliar sempre pelo e-mail **RECEBIDO** na caixa de entrada, não pelo rascunho aberto. Enviar teste pra si mesmo antes de aprovar.
